@@ -16,8 +16,10 @@ L.Control.Measure = L.Control.extend({
         this._markerList = [];
 
         this._startPoint = null;
+        this._currentPoint = null;
         this._endPoint = null;
         this._line = null;
+        this._tmpLine = null;
     },
 
     onAdd: function (map) {
@@ -42,8 +44,10 @@ L.Control.Measure = L.Control.extend({
 
     _enable: function() {
         this._startPoint = null;
+        this._currentPoint = null;
         this._endPoint = null;
         this._line = null;
+        this._tmpLine = null;
 
         this._features.clearLayers();
         this._markerList = [];
@@ -51,11 +55,13 @@ L.Control.Measure = L.Control.extend({
         this._enabled = true;
         L.DomUtil.addClass(this._button, 'leaflet-control-measure-enabled');
         this._map.on('click', this._onMapClick, this);
+        //this._map.on('mousemove', this._onMapMouseMove, this);
     },
     _disable: function() {
         this._enabled = false;
         L.DomUtil.removeClass(this._button, 'leaflet-control-measure-enabled');
         this._map.off('click', this._onMapClick, this);
+        //this._map.off('mousemove', this._onMapMouseMove, this);
     },
 
     _onClick: function() {
@@ -77,6 +83,11 @@ L.Control.Measure = L.Control.extend({
 
         }
         else if (this._endPoint === null) {
+            if (this._tmpLine !== null) {
+                this._featureGroup.removeLayer(this._tmpLine);
+                this._tmpLine = null;
+            }
+
             this._endPoint = e.latlng;
 
             this._line = new L.Polyline([ this._startPoint, this._endPoint ], { color: 'black', opacity: 0.5, stroke: true });
@@ -90,9 +101,23 @@ L.Control.Measure = L.Control.extend({
         }
     },
 
+    _onMapMouseMove: function(e) {
+        if (this._startPoint === null || this._endPoint !== null) return;
+
+        this._currentPoint = e.latlng;
+
+        if (this._tmpLine === null) {
+            this._tmpLine = new L.Polyline([ this._startPoint, this._currentPoint ], { color: '#000080', opacity: 0.5, dashArray: '5, 5' });
+            this._features.addLayer(this._tmpLine);
+        }
+        else {
+            this._tmpLine.setLatLngs([ this._startPoint, this._currentPoint ]);
+        }
+    },
+
     _onMarkerDrag: function(e) {
         var marker = e.target;
-        var i = this._markerList.indexOf(marker); console.log(i);
+        var i = this._markerList.indexOf(marker);
 
         var listLatng = this._line.getLatLngs();
         listLatng[i] = marker.getLatLng();
