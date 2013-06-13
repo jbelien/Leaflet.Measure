@@ -13,6 +13,7 @@ L.Control.Measure = L.Control.extend({
         this._map = null;
 
         this._features = new L.FeatureGroup();
+        this._markerList = [];
 
         this._startPoint = null;
         this._endPoint = null;
@@ -73,9 +74,13 @@ L.Control.Measure = L.Control.extend({
     },
 
     _onMapClick: function(e) {
-        var marker = new L.Marker(e.latlng, { draggable:false });
+        var marker = new L.Marker(e.latlng, { draggable: true });
         marker.bindPopup('Lng: ' + e.latlng.lng.toFixed(6) + '<br />Lat: ' + e.latlng.lat.toFixed(6));
+        marker.on('drag', this._onMarkerDrag, this);
+        marker.on('dragend', this._onMarkerDragEnd, this);
+
         this._features.addLayer(marker);
+        this._markerList.push(marker);
 
         if (this._startPoint === null) {
             this._startPoint = e.latlng;
@@ -93,10 +98,25 @@ L.Control.Measure = L.Control.extend({
 
             this._disable();
         }
-        //marker.on('drag', this._updateRuler, this);
     },
 
-    _updateRuler: function(e) {
+    _onMarkerDrag: function(e) {
+        var marker = e.target;
+        var i = this._markerList.indexOf(marker);
+
+        var listLatng = this._line.getLatLngs();
+        listLatng[i] = marker.getLatLng();
+        this._line.setLatLngs(listLatng);
+
+        if (i == 0)
+            this._startPoint = marker.getLatLng();
+        else if (i == (this._markerList.length - 1))
+            this._endPoint = marker.getLatLng();
+    },
+    _onMarkerDragEnd: function(e) {
+        var distance = this._startPoint.distanceTo(this._endPoint);
+        var sz  = 'Distance: ' + (distance > 50000 ? (distance/1000).toFixed(2) + ' km.' : distance.toFixed(2) + ' m.');
+        this._line.bindPopup(sz).openPopup();
     }
 });
 
