@@ -1,0 +1,8 @@
+.leafle-controlt-measure a {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}
+.leaflet-control-measure > .leaflet-control-measure-enabled {
+    font-weight: bold;
+}
