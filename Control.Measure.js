@@ -46,6 +46,7 @@ L.Control.Measure = L.Control.extend({
         this._line = null;
 
         this._features.clearLayers();
+        this._markerList = [];
 
         this._enabled = true;
         L.DomUtil.addClass(this._button, 'leaflet-control-measure-enabled');
@@ -91,7 +92,7 @@ L.Control.Measure = L.Control.extend({
 
     _onMarkerDrag: function(e) {
         var marker = e.target;
-        var i = this._markerList.indexOf(marker);
+        var i = this._markerList.indexOf(marker); console.log(i);
 
         var listLatng = this._line.getLatLngs();
         listLatng[i] = marker.getLatLng();
