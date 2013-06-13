@@ -8,7 +8,7 @@ L.Control.Measure = L.Control.extend({
 
         this._enabled = false;
         this._container = null;
-        this._buttonM = null;
+        this._button = null;
         this._buttonD = null;
         this._map = null;
 
@@ -25,27 +25,17 @@ L.Control.Measure = L.Control.extend({
         this._features.addTo(map);
 
         this._container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-measure');
-        this._buttonM = L.DomUtil.create('a', '', this._container);
-        this._buttonM.href = '#';
-        this._buttonM.innerHTML = 'M';
-        this._buttonM.title = 'Measure';
-        this._buttonD = L.DomUtil.create('a', '', this._container);
-        this._buttonD.href = '#';
-        this._buttonD.innerHTML = 'D';
-        this._buttonD.title = 'Delete all measures';
+        this._button = L.DomUtil.create('a', '', this._container);
+        this._button.href = '#';
+        this._button.innerHTML = 'M';
+        this._button.title = 'Measure';
 
         L.DomEvent
-            .on(this._buttonM, 'click', L.DomEvent.stopPropagation)
-            .on(this._buttonM, 'mousedown', L.DomEvent.stopPropagation)
-            .on(this._buttonM, 'dblclick', L.DomEvent.stopPropagation)
-            .on(this._buttonM, 'click', L.DomEvent.preventDefault)
-            .on(this._buttonM, 'click', this._onClickM, this);
-        L.DomEvent
-            .on(this._buttonD, 'click', L.DomEvent.stopPropagation)
-            .on(this._buttonD, 'mousedown', L.DomEvent.stopPropagation)
-            .on(this._buttonD, 'dblclick', L.DomEvent.stopPropagation)
-            .on(this._buttonD, 'click', L.DomEvent.preventDefault)
-            .on(this._buttonD, 'click', this._onClickD, this);
+            .on(this._button, 'click', L.DomEvent.stopPropagation)
+            .on(this._button, 'mousedown', L.DomEvent.stopPropagation)
+            .on(this._button, 'dblclick', L.DomEvent.stopPropagation)
+            .on(this._button, 'click', L.DomEvent.preventDefault)
+            .on(this._button, 'click', this._onClick, this);
 
         return this._container;
     },
@@ -55,22 +45,21 @@ L.Control.Measure = L.Control.extend({
         this._endPoint = null;
         this._line = null;
 
+        this._features.clearLayers();
+
         this._enabled = true;
-        L.DomUtil.addClass(this._buttonM, 'leaflet-control-measure-enabled');
+        L.DomUtil.addClass(this._button, 'leaflet-control-measure-enabled');
         this._map.on('click', this._onMapClick, this);
     },
     _disable: function() {
         this._enabled = false;
-        L.DomUtil.removeClass(this._buttonM, 'leaflet-control-measure-enabled');
+        L.DomUtil.removeClass(this._button, 'leaflet-control-measure-enabled');
         this._map.off('click', this._onMapClick, this);
     },
 
-    _onClickM: function() {
+    _onClick: function() {
         if (this._enabled) this._disable();
         else               this._enable();
-    },
-    _onClickD: function() {
-        this._features.clearLayers();
     },
 
     _onMapClick: function(e) {
