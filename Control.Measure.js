@@ -92,7 +92,7 @@ L.Control.Measure = L.Control.extend({
 
     _onMarkerDrag: function(e) {
         var marker = e.target;
-        var i = this._markerList.indexOf(marker); console.log(i);
+        var i = this._markerList.indexOf(marker);
 
         var listLatng = this._line.getLatLngs();
         listLatng[i] = marker.getLatLng();
