@@ -110,7 +110,7 @@ L.Control.Measure = L.Control.extend({
     }
 });
 
-L.control.Measure = function(options) {
+L.control.measure = function(options) {
     return new L.Control.Measure(options);
 };
 
