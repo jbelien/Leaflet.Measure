@@ -4,4 +4,4 @@ Leaflet.Measure
 
 Measuring tool for Leaflet.
 
-```L.control.Measure().addTo(map);``` or ```var map = L.map('map', { measureControl: true });```
+```L.control.measure().addTo(map);``` or ```var map = L.map('map', { measureControl: true });```
