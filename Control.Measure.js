@@ -24,8 +24,8 @@ L.Control.Measure = L.Control.extend({
         this._map = map;
         this._features.addTo(map);
 
-        this._container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-measure');
-        this._button = L.DomUtil.create('a', '', this._container);
+        this._container = L.DomUtil.create('div', 'leaflet-control-measure leaflet-bar leaflet-control');
+        this._button = L.DomUtil.create('a', 'leaflet-bar-part', this._container);
         this._button.href = '#';
         this._button.innerHTML = 'M';
         this._button.title = 'Measure';
